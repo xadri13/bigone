@@ -1,0 +1,154 @@
+function Player(life, score) {
+        var settings = {
+            marginBottom : 10,
+            defaultHeight : 66
+        };
+        player = new Image();
+        player.src = 'images/bueno.png';
+        player.posX = (canvas.width / 2) - (player.width / 2);
+        player.posY = canvas.height - (player.height == 0 ? settings.defaultHeight : player.height) - settings.marginBottom;
+        player.life = life;
+        player.score = score;
+        player.dead = false;
+        player.speed = playerSpeed;
+ 
+        var shoot = function () {
+            if (nextPlayerShot  5)
+                player.posX -= player.speed;
+            if (keyPressed.right && player.posX  0) {
+                this.dead = true;
+                evilShotsBuffer.splice(0, evilShotsBuffer.length);
+                playerShotsBuffer.splice(0, playerShotsBuffer.length);
+                this.src = 'images/bueno_muerto.png';
+                createNewEvil();
+                setTimeout(function () {
+                    player = new Player(player.life - 1, player.score);
+                }, 500);
+ 
+            } else {
+                saveFinalScore();
+                youLoose = true;
+            }
+        };        
+        
+        return player;
+    function Shot( x, y, array) {
+        this.posX = x;
+        this.posY = y;
+        this.image = new Image();
+        this.speed = shotSpeed;
+        this.identifier = 0;
+        this.add = function () {
+            array.push(this);
+        };
+        this.deleteShot = function (idendificador) {
+            arrayRemove(array, idendificador);
+        };
+    }
+
+    function PlayerShot (x, y) {
+        Object.getPrototypeOf(PlayerShot.prototype).constructor.call(this, x, y, playerShotsBuffer);
+        this.image.src =  'images/disparo_bueno.png';
+        this.isHittingEvil = function() {
+            return (!evil.dead && this.posX >= evil.posX && this.posX = evil.posY && this.posY = player.posX && this.posX = player.posY && this.posY
+            }
+            // nos marca los pulsos del juego
+window.requestAnimFrame = (function () {
+    return  window.requestAnimationFrame        ||
+        window.webkitRequestAnimationFrame  ||
+        window.mozRequestAnimationFrame     ||
+        window.oRequestAnimationFrame       ||
+        window.msRequestAnimationFrame      ||
+        function ( /* function */ callback, /* DOMElement */ element) {
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+// el bucle del juego
+	function anim () {
+		loop(); // hacemos cosas
+		requestAnimFrame(anim); // esperamos al nuevo ciclo
+   	}
+    anim();
+ 
+	// lo que hacemos en cada ciclo
+	function loop() {
+        update(); // actualizamos posiciones, comprobamos interacciones
+        draw(); // pintamos a los actores
+    }
+    // las teclas
+	var keyMap = {
+            left: 37,
+            right: 39,
+            fire: 32     // tecla espacio
+        };
+        
+    //registramos los eventos de pulsaciones de teclado
+    addListener(document, 'keydown', keyDown);
+    addListener(document, 'keyup', keyUp);
+    function addListener(element, type, expression, bubbling) {
+        bubbling = bubbling || false;
+ 
+        if (window.addEventListener) { // Standard
+            element.addEventListener(type, expression, bubbling);
+        } else if (window.attachEvent) { // IE
+            element.attachEvent('on' + type, expression);
+        }
+    }
+     
+    // indicamos qué tecla está presionada en función del evento  
+    function keyDown(e) {
+        var key = (window.event ? e.keyCode : e.which);
+        for (var inkey in keyMap) {
+            if (key === keyMap[inkey]) {
+                e.preventDefault();
+                keyPressed[inkey] = true;
+            }
+        }
+    }
+ 
+    function keyUp(e) {
+        var key = (window.event ? e.keyCode : e.which);
+        for (var inkey in keyMap) {
+            if (key === keyMap[inkey]) {
+                e.preventDefault();
+                keyPressed[inkey] = false;
+            }
+        }
+    }
+    
+    // la medusa actuará según la tecla pulsada
+    function playerAction() {
+        player.doAnything();
+    }    
+    function saveFinalScore() {
+        localStorage.setItem(getFinalScoreDate(), getTotalScore());
+        showBestScores();
+        removeNoBestScores();
+    }
+    
+    function showBestScores() {
+        var bestScores = getBestScoreKeys();
+        var bestScoresList = document.getElementById('puntuaciones');
+        if (bestScoresList) {
+            clearList(bestScoresList);
+            for (var i=0; i < bestScores.length; i++) {
+                addListElement(bestScoresList, bestScores[i], i==0?'negrita':null);
+                addListElement(bestScoresList, localStorage.getItem(bestScores[i]), i==0?'negrita':null);
+            }
+        }
+    }
+ 
+    function removeNoBestScores() {
+        var scoresToRemove = [];
+        var bestScoreKeys = getBestScoreKeys();
+        for (var i=0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (!bestScoreKeys.containsElement(key)) {
+                scoresToRemove.push(key);
+            }
+        }
+        for (var j = 0; j < scoresToRemove.length; j++) {
+            var scoreToRemoveKey = scoresToRemove[j];
+            localStorage.removeItem(scoreToRemoveKey);
+        }
+    }
